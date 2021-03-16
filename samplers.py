@@ -3,7 +3,17 @@ import numpy as np
 
 
 class CategoriesSampler():
-
+    """
+    CategoriesSampler
+    
+    Samples data points for the current batch. This is present to sample N-way (N-classes) and k shot + q query samples in every batch.
+    This is called in every iteration of a single epoch. Hence its length is the number of episodes, which is equal to the number of batches.
+    This returns the indices for the current batch, which are passed on to the __getitem__ of the dataloader to get the image and label.
+    
+    To check: 
+    1. Why isn't this inheriting ```Sampler``` class from PyTorch?
+    2. The paper used RANDOMSAMPLE without replacement, but here it is done w/ replacement?
+    """
     def __init__(self, label, n_batch, n_cls, n_per):
         self.n_batch = n_batch
         self.n_cls = n_cls
