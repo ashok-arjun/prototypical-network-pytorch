@@ -66,12 +66,17 @@ if __name__ == '__main__':
         ta = Averager()
 
         for i, batch in enumerate(train_loader, 1):
+            """
+            The labels are ignored, because our aim is not identify each label among 100 labels.
+            Instead, our aim is to identify which class among the N classes in the episode our example belongs to.
+            Hence, we create synthetic labels by arranging them according to our N-way and k-query
+            """
             data, _ = [_.cuda() for _ in batch]
             p = args.shot * args.train_way
             data_shot, data_query = data[:p], data[p:]
 
             proto = model(data_shot)
-            proto = proto.reshape(args.shot, args.train_way, -1).mean(dim=0)
+            proto = proto.reshape(args.shot, args.train_way, -1).mean(dim=0) # form prototypes. Shape: train_way * 1400
 
             label = torch.arange(args.train_way).repeat(args.query)
             label = label.type(torch.cuda.LongTensor)
